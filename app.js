@@ -14,6 +14,7 @@ Map     = require('./models/Map').Map;
 maps    = require('./controllers/maps');
 
 //config
+app.set('port', process.env.PORT || 9001);
 app.use(require('less-middleware')({ 
     debug: true
   , src: __dirname + '/private'
@@ -50,7 +51,8 @@ setInterval(function() {
 }, 14400000);
 
 //go!
-app.listen(9001 , function() {
-  console.log('APP STARTED AND LISTENING ON 9001');
+
+app.listen(app.get('port') , function() {
+  console.log('APP STARTED AND LISTENING ON ' + app.get('port'));
   console.log(account.feed_id);
 });
