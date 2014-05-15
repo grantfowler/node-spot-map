@@ -7,13 +7,13 @@ var express = require('express')
 //account
 var account = require('./account');
 
-//model
+//models
 Map     = require('./models/Map').Map;
 
-//controller
+//controllers
 maps    = require('./controllers/maps');
 
-//config
+//environment
 app.set('port', process.env.PORT || 9001);
 app.use(require('less-middleware')({ 
     debug: true
@@ -54,5 +54,5 @@ setInterval(function() {
 
 app.listen(app.get('port') , function() {
   console.log('APP STARTED AND LISTENING ON ' + app.get('port'));
-  console.log(account.feed_id);
+  console.log('SPOT Feed ID: ' + account.feed_id);
 });

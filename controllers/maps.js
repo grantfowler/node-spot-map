@@ -6,16 +6,8 @@ var account = require('../account')
 module.exports = {
 
   viewMap: function(req, res) {
-
-    // Map.find({}).exec(function(err, points) {
-    //   console.log(points);
-    //   res.send("VIEW MAP PAGE");
-    // });
-
-    //try executing spot api search
-
     res.render("map", {
-
+      //
     });
 
   }
@@ -30,17 +22,14 @@ module.exports = {
     });
   }
 
-  , testApi: function(req, res) {
-    res.send("TESTING API");
-  }
-
   , checkNewPoints: function() {
-    console.log("checking for new points...");
+    //spot api docs: http://faq.findmespot.com/index.php?action=showEntry&data=69
+    var currDate = new Date();
+    console.log("checking for new points. Date: " + (currDate.getMonth() + 1) + "-" + currDate.getDate() + "-" + currDate.getFullYear() + "@" + currDate.getHours() + ":" + currDate.getMinutes());
     var spotBaseUrl = "https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/" + account.feed_id + "/";
     //get points from spot api
     rest.get(spotBaseUrl + "message.json").on('complete', function(result) {
       var spotPoints = result.response.feedMessageResponse.messages.message; //wooo
-
       //check most recent point against database
       Map.find({}).sort({"created": -1}).limit(1).exec(function(err, lastPoint) {
         if(err || lastPoint.length == 0) {
@@ -51,10 +40,9 @@ module.exports = {
             , longitude: spotPoints[0].longitude
             , dateTime: spotPoints[0].dateTime
           }).save(function(err) {
-            console.log("initial point added! others will be added on next update.");
+            //point created. wait for next interval to add others.
             return -1;
           });
-
         } else {
           if(spotPoints[spotPoints.length - 1].dateTime == lastPoint.dateTime) {
             //no new points
@@ -67,14 +55,12 @@ module.exports = {
               for(var i = 0; i < points.length; i++) {
                 currentPointDateTimes.push(points[i].dateTime);
               }
-              console.log(currentPointDateTimes);
               async.each(spotPoints, function(nextPoint, callback) {
-                //if dateTime exists, do nothing
-                //else, add point to mongo
                 if(currentPointDateTimes.indexOf(nextPoint.dateTime) > -1) {
-                  console.log("point already exists: " + nextPoint.dateTime);
+                  //if dateTime exists, do nothing
                   callback();
                 } else {
+                  //else, add point to mongo
                   console.log("new point: " + nextPoint.dateTime);
                   var newPoint = new Map({
                     latitude: nextPoint.latitude
@@ -87,7 +73,6 @@ module.exports = {
                     callback();
                   });
                 }
-
               }, function(err) {
                 if(!err) {
                   console.log("Finished updating database from SPOT api!");
@@ -95,20 +80,11 @@ module.exports = {
                   console.log("errors: " + err);
                 }
               });
-
-
             });
-
-            // console.log("here");
           }
-
         }
       });
-
-
     });
-
-
   }
 
 }
