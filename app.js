@@ -44,9 +44,10 @@ app.get('/points'                   , maps.getPoints);
 app.get('/'                         , maps.viewMap);
 
 //intervals for checking SPOT
+maps.checkNewPoints();
 setInterval(function() {
   maps.checkNewPoints();
-}, 10000);
+}, 14400000);
 
 //go!
 app.listen(9001 , function() {
