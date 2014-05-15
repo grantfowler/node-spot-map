@@ -51,4 +51,5 @@ setInterval(function() {
 //go!
 app.listen(9001 , function() {
   console.log('APP STARTED AND LISTENING ON 9001');
+  console.log(account.feed_id);
 });

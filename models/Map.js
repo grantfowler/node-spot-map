@@ -7,6 +7,7 @@ var MapSchema = new Schema({
   created:          { type: Date, required: true, default: Date.now }
   , latitude:       { type: Number, required: true }
   , longitude:      { type: Number, required: true }
+  , dateTime:       { type: String, required: true, unique: true }
 });
 
 var Map = mongoose.model('Map', MapSchema);

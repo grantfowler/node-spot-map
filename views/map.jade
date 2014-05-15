@@ -38,11 +38,11 @@ html(lang="en")
           markers = points;
           console.log("adding markers to map.");
           for(var i = 0; i < markers.length; i++) {
-            var nextLatLng = new google.maps.LatLng(markers[i].lat, markers[i].lng);
+            var nextLatLng = new google.maps.LatLng(markers[i].latitude, markers[i].longitude);
             var nextMarker = new google.maps.Marker({
               position: nextLatLng
               , map: map
-              , title: markers[i].date
+              , title: markers[i].dateTime.split("+")[0] //cut out some stuff
               , animation: google.maps.Animation.DROP
             });
 
