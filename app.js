@@ -30,15 +30,17 @@ app.use(express.session({
   secret: "secret"
 }));
 
+app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
 //database
-var mongoUri = process.env.MONGOLAB_URI 
-  || process.env.MONGOHQ_URL 
-  || 'mongodb://localhost/node-spot-map'
-  ;
-mongoose.connect(mongoUri)
-;
+// var mongoUri = process.env.MONGOLAB_URI 
+//   || process.env.MONGOHQ_URL 
+//   || 'mongodb://localhost/node-spot-map'
+//   ;
+// mongoose.connect(mongoUri)
+var mongoUri = process.env.MONGODB_PORT ? process.env.MONGODB_PORT.replace("tcp", "mongodb") + "/node-spot-map" : 'mongodb://localhost/node-spot-map';
+mongoose.connect(mongoUri);
 
 //routes
 app.get('/points'                   , maps.getPoints);

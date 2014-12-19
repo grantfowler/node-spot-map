@@ -14,7 +14,7 @@ module.exports = {
 
   , getPoints: function(req, res) {
     Map.find({}).exec(function(err, points) {
-      if(err) {
+      if(err || !points) {
         res.send("Something went wrong when trying to access the database");
       } else {
         res.json(points);
@@ -23,6 +23,9 @@ module.exports = {
   }
 
   , checkNewPoints: function() {
+
+    return -1; //we dont care about scraping right now, we just want to display the BrazilDrive map.
+
     //spot api docs: http://faq.findmespot.com/index.php?action=showEntry&data=69
     var currDate = new Date();
     console.log("checking for new points. Date: " + (currDate.getMonth() + 1) + "-" + currDate.getDate() + "-" + currDate.getFullYear() + "@" + currDate.getHours() + ":" + currDate.getMinutes());
@@ -30,15 +33,20 @@ module.exports = {
     //get points from spot api
     rest.get(spotBaseUrl + "message.json").on('complete', function(result) {
       var spotPoints = result.response.feedMessageResponse.messages.message; //wooo
+      console.log(spotPoints);
+      if(!spotPoints)
+        return -1;
+      if(!spotPoints.length)
+        return -1;
       //check most recent point against database
       Map.find({}).sort({"created": -1}).limit(1).exec(function(err, lastPoint) {
-        if(err || lastPoint.length == 0) {
+        if(err || !lastPoint || lastPoint.length == 0) {
           //no points in db yet
           console.log("no point found, creating first one...");
           var firstPoint = new Map({
-            latitude: spotPoints[0].latitude
-            , longitude: spotPoints[0].longitude
-            , dateTime: spotPoints[0].dateTime
+            latitude: spotPoints.latitude || spotPoints[0].latitude
+            , longitude: spotPoints.longitude || spotPoints[0].longitude
+            , dateTime: spotPoints.dateTime || spotPoints[0].dateTime
           }).save(function(err) {
             //point created. wait for next interval to add others.
             return -1;
