@@ -13,11 +13,11 @@ module.exports = {
   }
 
   , getPoints: function(req, res) {
-    Map.find({}).exec(function(err, points) {
+    Map.find({}).sort({dateTime: 1}).exec(function(err, points) {
       if(err || !points) {
         res.send("Something went wrong when trying to access the database");
       } else {
-        res.json(points);
+        res.send({points: points});
       }
     });
   }

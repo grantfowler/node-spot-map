@@ -33,17 +33,27 @@ html(lang="en")
       }
       function addMarkers() {
         console.log("getting points from server.");
-        $.get("/points", function(points) {
-          markers = points;
+        $.get("/points", function(data) {
+          console.log(data.points);
+          markers = data.points;
+          var routePathCoords = [];
           console.log("adding markers to map.");
           for(var i = 0; i < markers.length; i++) {
             var nextLatLng = new google.maps.LatLng(markers[i].latitude, markers[i].longitude);
+            routePathCoords.push(nextLatLng);
             var nextMarker = new google.maps.Marker({
               position: nextLatLng
               , map: map
-              , title: markers[i].dateTime.split("+")[0] //cut out some stuff
-              , animation: google.maps.Animation.DROP
+              //- , title: markers[i].dateTime.split("+")[0] //cut out some stuff
             });
+            //- var routePath = new google.maps.Polyline({
+            //-   path: routePathCoords
+            //-     , geodesic: true,
+            //-     strokeColor: '#FF0000',
+            //-     strokeOpacity: 1.0,
+            //-     strokeWeight: 2
+            //- });
+            //- routePath.setMap(map);
 
           }
         });
